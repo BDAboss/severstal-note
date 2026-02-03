@@ -23,7 +23,7 @@ export default function Editor({ note, onChangeTitle, onChangeText }) {
     return `Обновлено: ${formatUpdatedAt(note.updatedAt)}`;
   }, [note]);
 
-  // Когда переключаешь заметку — нужно обновить содержимое редактора (HTML)
+
   useEffect(() => {
     const el = textareaRef.current;
     if (!el || !note) return;

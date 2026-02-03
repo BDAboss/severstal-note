@@ -182,7 +182,7 @@ export default function Toolbar({ textareaRef, onApply }) {
         <p className="text-[10px] italic text-center text-black">К</p>
       </button>
 
-      {/* Подчёркнутый (вместо кода) */}
+      {/* Подчёркнутый */}
       <button
         type="button"
         className="flex justify-center items-center flex-grow-0 flex-shrink-0 w-6 h-6 relative overflow-hidden rounded bg-white border border-[#b5b5b5] cursor-pointer hover:bg-gray-50 transition-colors"
