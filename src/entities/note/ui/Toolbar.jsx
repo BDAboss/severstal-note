@@ -15,6 +15,10 @@ export default function Toolbar({ textareaRef, onApply }) {
   const [fontOpen, setFontOpen] = useState(false);
   const [sizeOpen, setSizeOpen] = useState(false);
 
+  // что показываем в кнопках
+  const [selectedFontLabel, setSelectedFontLabel] = useState("Шрифт");
+  const [selectedSizeLabel, setSelectedSizeLabel] = useState("Размер");
+
   const fonts = useMemo(
     () => [
       { label: "Inter", value: "Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial" },
@@ -51,12 +55,7 @@ export default function Toolbar({ textareaRef, onApply }) {
       const el = textareaRef.current;
       if (!el) return;
 
-      const map = {
-        bold: "bold",
-        italic: "italic",
-        underline: "underline",
-      };
-
+      const map = { bold: "bold", italic: "italic", underline: "underline" };
       keepSelectionAndFocus(el, () => exec(map[type]));
       syncHtml();
     },
@@ -64,11 +63,12 @@ export default function Toolbar({ textareaRef, onApply }) {
   );
 
   const applyFont = useCallback(
-    (fontValue) => {
+    (font) => {
       const el = textareaRef.current;
       if (!el) return;
 
-      keepSelectionAndFocus(el, () => exec("fontName", fontValue));
+      keepSelectionAndFocus(el, () => exec("fontName", font.value));
+      setSelectedFontLabel(font.label); // показываем выбранный шрифт
       setFontOpen(false);
       syncHtml();
     },
@@ -76,11 +76,12 @@ export default function Toolbar({ textareaRef, onApply }) {
   );
 
   const applySize = useCallback(
-    (sizeValue) => {
+    (size) => {
       const el = textareaRef.current;
       if (!el) return;
 
-      keepSelectionAndFocus(el, () => exec("fontSize", sizeValue));
+      keepSelectionAndFocus(el, () => exec("fontSize", size.value));
+      setSelectedSizeLabel(size.label); // показываем выбранный размер
       setSizeOpen(false);
       syncHtml();
     },
@@ -88,7 +89,7 @@ export default function Toolbar({ textareaRef, onApply }) {
   );
 
   return (
-    <div className="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 h-10 gap-2.5 px-2.5 py-2 rounded-xl bg-white border border-[#787878]">
+    <div className="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 h-10 overflow-visible gap-2.5 px-2.5 py-2 rounded-xl bg-white border border-[#787878]">
       {/* Шрифт */}
       <div className="relative">
         <button
@@ -101,20 +102,23 @@ export default function Toolbar({ textareaRef, onApply }) {
           }}
           title="Шрифт"
         >
-          <p className="flex-grow-0 flex-shrink-0 text-[10px] text-left text-black">Шрифт</p>
+          {/* тут теперь выбранное название */}
+          <p className="flex-grow-0 flex-shrink-0 text-[10px] text-left text-black truncate">
+            {selectedFontLabel}
+          </p>
           <div className="flex items-center justify-center h-full">
             <div className="w-2 h-2 border-t border-r border-[#2D2D2D] transform rotate-135"></div>
           </div>
         </button>
 
         {fontOpen && (
-          <div className="absolute left-0 top-7 z-50 w-[198px] rounded-lg border border-[#b5b5b5] bg-white shadow-sm overflow-hidden">
+          <div className="absolute left-0 top-7 z-[9999] w-[198px] rounded-lg border border-[#b5b5b5] bg-white shadow-sm overflow-hidden">
             {fonts.map((f) => (
               <button
                 key={f.label}
                 type="button"
                 onMouseDown={(e) => e.preventDefault()}
-                onClick={() => applyFont(f.value)}
+                onClick={() => applyFont(f)}
                 className="w-full px-2.5 py-1 text-left text-[10px] hover:bg-gray-50"
                 style={{ fontFamily: f.value }}
               >
@@ -129,7 +133,7 @@ export default function Toolbar({ textareaRef, onApply }) {
       <div className="relative">
         <button
           type="button"
-          className="flex justify-between items-center flex-grow-0 flex-shrink-0 w-[75px] h-6 relative px-2.5 rounded-lg bg-white border border-[#b5b5b5] cursor-pointer"
+          className="flex justify-between items-center flex-grow-0 flex-shrink-0 w-[75px] h-6 relative overflow-hidden px-2.5 rounded-lg bg-white border border-[#b5b5b5] cursor-pointer"
           onMouseDown={(e) => e.preventDefault()}
           onClick={() => {
             setSizeOpen((v) => !v);
@@ -137,20 +141,23 @@ export default function Toolbar({ textareaRef, onApply }) {
           }}
           title="Размер"
         >
-          <p className="flex-grow-0 flex-shrink-0 text-[10px] text-left text-black">Размер</p>
+          {/* тут теперь выбранный размер */}
+          <p className="flex-grow-0 flex-shrink-0 text-[10px] text-left text-black truncate">
+            {selectedSizeLabel}
+          </p>
           <div className="flex items-center justify-center h-full">
             <div className="w-2 h-2 border-t border-r border-[#2D2D2D] transform rotate-135"></div>
           </div>
         </button>
 
         {sizeOpen && (
-          <div className="absolute left-0 top-7 z-50 w-[75px] rounded-lg border border-[#b5b5b5] bg-white shadow-sm overflow-hidden">
+          <div className="absolute left-0 top-7 z-[9999] w-[75px] rounded-lg border border-[#b5b5b5] bg-white shadow-sm overflow-hidden">
             {sizes.map((s) => (
               <button
                 key={s.label}
                 type="button"
                 onMouseDown={(e) => e.preventDefault()}
-                onClick={() => applySize(s.value)}
+                onClick={() => applySize(s)}
                 className="w-full px-2.5 py-1 text-left text-[10px] hover:bg-gray-50"
               >
                 {s.label}
