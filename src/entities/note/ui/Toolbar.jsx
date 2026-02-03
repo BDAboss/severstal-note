@@ -1,59 +1,197 @@
-import React from "react";
+import React, { useMemo, useState, useCallback } from "react";
 
-function wrapSelection(textarea, left, right) {
-  const start = textarea.selectionStart ?? 0;
-  const end = textarea.selectionEnd ?? 0;
+function exec(cmd, value = null) {
+  document.execCommand(cmd, false, value);
+}
 
-  const before = textarea.value.slice(0, start);
-  const selected = textarea.value.slice(start, end);
-  const after = textarea.value.slice(end);
-
-  const next = before + left + selected + right + after;
-  const cursorStart = start + left.length;
-  const cursorEnd = end + left.length;
-
-  return { next, cursorStart, cursorEnd };
+function keepSelectionAndFocus(el, fn) {
+  if (!el) return;
+  el.focus();
+  fn();
+  el.focus();
 }
 
 export default function Toolbar({ textareaRef, onApply }) {
-  const apply = (type) => {
-    const el = textareaRef.current;
+  const [fontOpen, setFontOpen] = useState(false);
+  const [sizeOpen, setSizeOpen] = useState(false);
+
+  const fonts = useMemo(
+    () => [
+      { label: "Inter", value: "Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial" },
+      { label: "Arial", value: "Arial, Helvetica, sans-serif" },
+      { label: "Times New Roman", value: '"Times New Roman", Times, serif' },
+      { label: "Georgia", value: "Georgia, serif" },
+      { label: "Courier New", value: '"Courier New", Courier, monospace' },
+      { label: "Verdana", value: "Verdana, Geneva, sans-serif" },
+    ],
+    []
+  );
+
+  const sizes = useMemo(
+    () => [
+      { label: "10", value: 1 },
+      { label: "12", value: 2 },
+      { label: "14", value: 3 },
+      { label: "16", value: 4 },
+      { label: "18", value: 5 },
+      { label: "24", value: 6 },
+      { label: "32", value: 7 },
+    ],
+    []
+  );
+
+  const syncHtml = useCallback(() => {
+    const el = textareaRef?.current;
     if (!el) return;
+    onApply?.(el.innerHTML);
+  }, [onApply, textareaRef]);
 
-    const map = {
-      bold: ["**", "**"],
-      italic: ["*", "*"],
-      mono: ["`", "`"]
-    };
+  const applyInline = useCallback(
+    (type) => {
+      const el = textareaRef.current;
+      if (!el) return;
 
-    const [l, r] = map[type];
-    const { next, cursorStart, cursorEnd } = wrapSelection(el, l, r);
+      const map = {
+        bold: "bold",
+        italic: "italic",
+        underline: "underline",
+      };
 
-    onApply(next);
+      keepSelectionAndFocus(el, () => exec(map[type]));
+      syncHtml();
+    },
+    [textareaRef, syncHtml]
+  );
 
-    
-    requestAnimationFrame(() => {
-      el.focus();
-      el.setSelectionRange(cursorStart, cursorEnd);
-    });
-  };
+  const applyFont = useCallback(
+    (fontValue) => {
+      const el = textareaRef.current;
+      if (!el) return;
 
-  const btnClass =
-    "rounded-xl border border-white/10 bg-black/20 px-3 py-2 text-xs font-semibold hover:border-sky-400/40";
+      keepSelectionAndFocus(el, () => exec("fontName", fontValue));
+      setFontOpen(false);
+      syncHtml();
+    },
+    [textareaRef, syncHtml]
+  );
+
+  const applySize = useCallback(
+    (sizeValue) => {
+      const el = textareaRef.current;
+      if (!el) return;
+
+      keepSelectionAndFocus(el, () => exec("fontSize", sizeValue));
+      setSizeOpen(false);
+      syncHtml();
+    },
+    [textareaRef, syncHtml]
+  );
 
   return (
-    <div className="flex items-center gap-2 border-b border-white/10 p-3">
-      <button type="button" className={btnClass} onClick={() => apply("bold")} title="Жирный (Markdown)">
-        B
-      </button>
-      <button type="button" className={btnClass} onClick={() => apply("italic")} title="Курсив (Markdown)">
-        I
-      </button>
-      <button type="button" className={btnClass} onClick={() => apply("mono")} title="Код (Markdown)">
-        {"</>"}
+    <div className="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 h-10 gap-2.5 px-2.5 py-2 rounded-xl bg-white border border-[#787878]">
+      {/* Шрифт */}
+      <div className="relative">
+        <button
+          type="button"
+          className="flex justify-between items-center flex-grow-0 flex-shrink-0 w-[198px] h-6 relative overflow-hidden px-2.5 rounded-lg bg-white border border-[#b5b5b5] cursor-pointer"
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={() => {
+            setFontOpen((v) => !v);
+            setSizeOpen(false);
+          }}
+          title="Шрифт"
+        >
+          <p className="flex-grow-0 flex-shrink-0 text-[10px] text-left text-black">Шрифт</p>
+          <div className="flex items-center justify-center h-full">
+            <div className="w-2 h-2 border-t border-r border-[#2D2D2D] transform rotate-135"></div>
+          </div>
+        </button>
+
+        {fontOpen && (
+          <div className="absolute left-0 top-7 z-50 w-[198px] rounded-lg border border-[#b5b5b5] bg-white shadow-sm overflow-hidden">
+            {fonts.map((f) => (
+              <button
+                key={f.label}
+                type="button"
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => applyFont(f.value)}
+                className="w-full px-2.5 py-1 text-left text-[10px] hover:bg-gray-50"
+                style={{ fontFamily: f.value }}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Размер */}
+      <div className="relative">
+        <button
+          type="button"
+          className="flex justify-between items-center flex-grow-0 flex-shrink-0 w-[75px] h-6 relative px-2.5 rounded-lg bg-white border border-[#b5b5b5] cursor-pointer"
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={() => {
+            setSizeOpen((v) => !v);
+            setFontOpen(false);
+          }}
+          title="Размер"
+        >
+          <p className="flex-grow-0 flex-shrink-0 text-[10px] text-left text-black">Размер</p>
+          <div className="flex items-center justify-center h-full">
+            <div className="w-2 h-2 border-t border-r border-[#2D2D2D] transform rotate-135"></div>
+          </div>
+        </button>
+
+        {sizeOpen && (
+          <div className="absolute left-0 top-7 z-50 w-[75px] rounded-lg border border-[#b5b5b5] bg-white shadow-sm overflow-hidden">
+            {sizes.map((s) => (
+              <button
+                key={s.label}
+                type="button"
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => applySize(s.value)}
+                className="w-full px-2.5 py-1 text-left text-[10px] hover:bg-gray-50"
+              >
+                {s.label}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Жирный */}
+      <button
+        type="button"
+        className="flex justify-center items-center flex-grow-0 flex-shrink-0 w-6 h-6 relative overflow-hidden rounded bg-white border border-[#b5b5b5] cursor-pointer hover:bg-gray-50 transition-colors"
+        onMouseDown={(e) => e.preventDefault()}
+        onClick={() => applyInline("bold")}
+        title="Жирный"
+      >
+        <p className="text-[10px] font-bold text-center text-black">Ж</p>
       </button>
 
-      <div className="ml-2 text-xs text-slate-300">Выдели текст → нажми кнопку</div>
+      {/* Курсив */}
+      <button
+        type="button"
+        className="flex justify-center items-center flex-grow-0 flex-shrink-0 w-6 h-6 relative overflow-hidden rounded bg-white border border-[#b5b5b5] cursor-pointer hover:bg-gray-50 transition-colors"
+        onMouseDown={(e) => e.preventDefault()}
+        onClick={() => applyInline("italic")}
+        title="Курсив"
+      >
+        <p className="text-[10px] italic text-center text-black">К</p>
+      </button>
+
+      {/* Подчёркнутый (вместо кода) */}
+      <button
+        type="button"
+        className="flex justify-center items-center flex-grow-0 flex-shrink-0 w-6 h-6 relative overflow-hidden rounded bg-white border border-[#b5b5b5] cursor-pointer hover:bg-gray-50 transition-colors"
+        onMouseDown={(e) => e.preventDefault()}
+        onClick={() => applyInline("underline")}
+        title="Подчёркнутый"
+      >
+        <p className="text-[10px] font-medium text-center text-black underline">Ч</p>
+      </button>
     </div>
   );
 }

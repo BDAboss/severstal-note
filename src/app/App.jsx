@@ -36,12 +36,10 @@ export default function App() {
   const [activeId, setActiveId] = useState(() => notes[0]?.id ?? null);
   const [query, setQuery] = useState("");
 
-
   const safeActiveId = useMemo(() => {
     if (activeId && notes.some((n) => n.id === activeId)) return activeId;
     return notes[0]?.id ?? null;
   }, [activeId, notes]);
-
 
   useEffect(() => {
     const res = saveNotes(notes);
@@ -90,44 +88,29 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100">
-      <div className="mx-auto max-w-6xl p-4 md:p-6">
-        <header className="mb-4 flex items-center justify-between">
-          <div>
-            <h1 className="text-xl md:text-2xl font-semibold tracking-tight">
-              Заметки
-            </h1>
-            <p className="text-sm text-slate-300">
-              React + Tailwind v4 + localStorage
-            </p>
-          </div>
+    <div className="w-full min-h-screen relative overflow-hidden bg-[#f5ead6]">
+      <p className="absolute left-[455px] top-[34px] text-2xl font-bold text-left text-[#0f172b]">
+        Мои заметки
+      </p>
 
-        <button
-          data-testid="create-note-btn"
-          type="button"
-          onClick={onCreate}
-          className="rounded-xl border border-sky-400/30 bg-sky-500/        15 px-4 py-2 text-sm font-medium hover:bg-sky-500/25"
-        >
-          + Новая
-        </button>
-        </header>
+      <div className="absolute left-[340px] top-[78px]">
+        <NotesList
+          notes={filteredNotes}
+          activeId={safeActiveId}
+          query={query}
+          onQueryChange={setQuery}
+          onSelect={setActiveId}
+          onDelete={onDelete}
+          onCreate={onCreate}
+        />
+      </div>
 
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-[360px_1fr]">
-          <NotesList
-            notes={filteredNotes}
-            activeId={safeActiveId}
-            query={query}
-            onQueryChange={setQuery}
-            onSelect={setActiveId}
-            onDelete={onDelete}
-          />
-
-          <Editor
-            note={activeNote}
-            onChangeTitle={(title) => patchActive({ title })}
-            onChangeText={(text) => patchActive({ text })}
-          />
-        </div>
+      <div className="absolute left-[760px] top-[78px]">
+        <Editor
+          note={activeNote}
+          onChangeTitle={(title) => patchActive({ title })}
+          onChangeText={(text) => patchActive({ text })}
+        />
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from "react";
+import React, { useMemo, useRef, useEffect } from "react";
 import Toolbar from "./Toolbar.jsx";
 
 function formatUpdatedAt(ts) {
@@ -8,7 +8,7 @@ function formatUpdatedAt(ts) {
       month: "2-digit",
       year: "numeric",
       hour: "2-digit",
-      minute: "2-digit"
+      minute: "2-digit",
     }).format(new Date(ts));
   } catch {
     return "";
@@ -23,42 +23,63 @@ export default function Editor({ note, onChangeTitle, onChangeText }) {
     return `Обновлено: ${formatUpdatedAt(note.updatedAt)}`;
   }, [note]);
 
+  // Когда переключаешь заметку — нужно обновить содержимое редактора (HTML)
+  useEffect(() => {
+    const el = textareaRef.current;
+    if (!el || !note) return;
+    const nextHtml = note.text || "";
+    if (el.innerHTML !== nextHtml) el.innerHTML = nextHtml;
+  }, [note]);
+
   if (!note) {
     return (
-      <section className="rounded-2xl border border-white/10 bg-white/5 p-6">
-        <h2 className="text-lg font-semibold">Нет выбранной заметки</h2>
-        <p className="mt-2 text-sm text-slate-300">Выбери заметку слева или создай новую.</p>
-      </section>
+      <div
+        className="flex flex-col justify-start items-center w-[820px] h-[924px] overflow-hidden gap-2.5 px-5 pt-[15px] pb-5 rounded-[20px] bg-[#fbf7ef]"
+        style={{ boxShadow: "0px 4px 12px 0 rgba(0,0,0,0.25)" }}
+      >
+        <div className="flex flex-col justify-center items-center self-stretch flex-grow relative overflow-hidden gap-2.5 px-2.5 py-[5px] rounded-lg">
+          <h2 className="text-[15px] font-semibold text-black">Нет выбранной заметки</h2>
+          <p className="text-sm text-[#90a1b9]">Выбери заметку слева или создай новую.</p>
+        </div>
+      </div>
     );
   }
 
   return (
-    <section className="rounded-2xl border border-white/10 bg-white/5 overflow-hidden">
-      <div className="p-3 border-b border-white/10">
+    <div
+      className="flex flex-col justify-start items-center w-[820px] h-[924px] overflow-hidden gap-2.5 px-5 pt-[15px] pb-5 rounded-[20px] bg-[#fbf7ef]"
+      style={{ boxShadow: "0px 4px 12px 0 rgba(0,0,0,0.25)" }}
+    >
+      <div className="flex flex-col justify-center items-start self-stretch flex-grow-0 flex-shrink-0 h-10 relative overflow-hidden gap-2.5 px-2.5 py-[5px] rounded-lg bg-white">
         <input
           value={note.title}
           onChange={(e) => onChangeTitle(e.target.value)}
           placeholder="Заголовок…"
           maxLength={80}
-          className="w-full rounded-xl border border-white/10 bg-black/20 px-3 py-2 text-sm font-semibold outline-none placeholder:text-slate-500 focus:border-sky-400/40"
+          className="self-stretch flex-grow w-[760px] h-[30px] text-[15px] font-semibold text-left text-black bg-transparent outline-none placeholder:text-[#90a1b9] border-none"
         />
-        <div className="mt-2 text-xs text-slate-300">{meta}</div>
       </div>
 
       <Toolbar textareaRef={textareaRef} onApply={onChangeText} />
 
-    <textarea
-      data-testid="note-textarea"
-      ref={textareaRef}
-      value={note.text}
-      onChange={(e) => onChangeText(e.target.value)}
-      placeholder="Текст заметки…"
-      className="h-[50vh] md:h-[60vh] w-full resize-none       bg-transparent p-4 text-sm leading-relaxed     outline-none"
-    />
-
-      <div className="border-t border-white/10 p-3 text-xs text-slate-300">
-        Подсказка: **жирный**, *курсив*, `код` — в формате Markdown.
+      <div className="flex flex-col justify-start items-start self-stretch flex-grow relative overflow-hidden px-2.5 py-4 rounded-2xl bg-[#efebe4]">
+        <div className="flex flex-col w-full h-full">
+          <div
+            data-testid="note-textarea"
+            ref={textareaRef}
+            contentEditable
+            suppressContentEditableWarning
+            onInput={() => onChangeText(textareaRef.current?.innerHTML ?? "")}
+            className="self-stretch flex-grow w-full h-full text-sm text-left text-black bg-transparent outline-none border-none"
+            style={{ whiteSpace: "pre-wrap" }}
+          />
+          <div className="mt-2 text-xs text-[#90a1b9]">{meta}</div>
+        </div>
       </div>
-    </section>
+
+      <div className="self-stretch flex-grow-0 flex-shrink-0 text-xs text-[#90a1b9] mt-2">
+        Подсказка: выдели текст и нажимай Ж / К / Ч — это форматирование, не Markdown.
+      </div>
+    </div>
   );
 }

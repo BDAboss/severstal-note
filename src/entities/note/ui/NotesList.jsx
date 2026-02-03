@@ -1,26 +1,64 @@
 import React from "react";
 
-function preview(text) {
-  const oneLine = (text || "").replace(/\s+/g, " ").trim();
+function htmlToText(html) {
+  if (!html) return "";
+  const div = document.createElement("div");
+  div.innerHTML = html;
+  return div.innerText || div.textContent || "";
+}
+
+function preview(html) {
+  const text = htmlToText(html);
+  const oneLine = text.replace(/\s+/g, " ").trim();
   if (!oneLine) return "— пусто —";
   return oneLine.length > 80 ? `${oneLine.slice(0, 80)}…` : oneLine;
 }
 
-export default function NotesList({ notes, activeId, query, onQueryChange, onSelect, onDelete }) {
+export default function NotesList({
+  notes,
+  activeId,
+  query,
+  onQueryChange,
+  onSelect,
+  onDelete,
+  onCreate
+}) {
   return (
-    <aside className="rounded-2xl border border-white/10 bg-white/5 overflow-hidden">
-      <div className="p-3 border-b border-white/10">
-        <input
-          value={query}
-          onChange={(e) => onQueryChange(e.target.value)}
-          placeholder="Поиск…"
-          className="w-full rounded-xl border border-white/10 bg-black/20 px-3 py-2 text-sm outline-none placeholder:text-slate-500 focus:border-sky-400/40"
-        />
+    <div
+      className="flex flex-col justify-start items-center w-[400px] h-[924px] relative overflow-hidden gap-2.5 px-[13px] pt-[15px] pb-3.5 rounded-[20px] bg-[#fbf7ef]"
+      style={{ boxShadow: "0px 4px 12px 0 rgba(0,0,0,0.25)" }}
+    >
+      <div className="flex justify-center items-start self-stretch flex-grow-0 flex-shrink-0 gap-2.5">
+        <div className="flex flex-col justify-center items-start flex-grow h-10 relative overflow-hidden gap-2.5 pl-2.5 pr-[117px] py-[5px] rounded-lg bg-white">
+          <input
+            value={query}
+            onChange={(e) => onQueryChange(e.target.value)}
+            placeholder="Поиск..."
+            className="flex-grow-0 flex-shrink-0 text-xs font-medium text-left text-[#90a1b9] w-full bg-transparent border-none outline-none placeholder:text-[#90a1b9]"
+          />
+        </div>
+        <button
+          type="button"
+          className="flex justify-center items-center flex-grow-0 flex-shrink-0 w-10 h-10 relative gap-2.5 p-3 rounded-[26px] cursor-pointer hover:opacity-90 transition-opacity"
+          title="Добавить заметку"
+          onClick={onCreate}
+          style={{ background: "linear-gradient(to right, #fca311 -2.31%, #ef6c1a 102.31%)" }}
+        >
+          <img 
+            src="/src/assets/icon-plus.svg" 
+            alt="Добавить заметку" 
+            className="w-4 h-4"
+          />
+        </button>
+      </div>
+      
+      <div className="self-stretch flex-grow-0 flex-shrink-0 h-px relative overflow-hidden">
+        <div className="w-[374px] h-px absolute left-[-1px] top-[-1px] bg-white" />
       </div>
 
-      <div className="max-h-[65vh] overflow-auto p-2">
+      <div className="flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 w-[339px] relative overflow-auto gap-5 p-0 rounded-[0px] bg-transparent">
         {notes.length === 0 ? (
-          <div className="p-4 text-sm text-slate-300">Ничего не найдено</div>
+          <div className="p-4 text-sm text-slate-500 w-full text-center">Ничего не найдено</div>
         ) : (
           notes.map((n) => {
             const isActive = n.id === activeId;
@@ -31,40 +69,44 @@ export default function NotesList({ notes, activeId, query, onQueryChange, onSel
                 tabIndex={0}
                 onClick={() => onSelect(n.id)}
                 onKeyDown={(e) => e.key === "Enter" && onSelect(n.id)}
-                className={[
-                  "mb-2 rounded-2xl border p-3 cursor-pointer",
-                  isActive
-                    ? "border-sky-400/40 bg-sky-500/10"
-                    : "border-transparent bg-white/3 hover:border-white/15"
-                ].join(" ")}
+                className={`flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 w-[339px] relative overflow-hidden gap-3 p-5 rounded-[20px] bg-white border ${
+                  isActive ? "border-[#ffac4e]" : "border-transparent"
+                } cursor-pointer mb-5`}
               >
-                <div className="flex items-start justify-between gap-2">
-                  <div className="min-w-0">
-                    <div className="truncate text-sm font-semibold">
-                      {n.title || "Без названия"}
-                    </div>
-                    <div className="mt-1 text-xs text-slate-300">
-                      {preview(n.text)}
+                <div className="flex justify-between items-center self-stretch flex-grow-0 flex-shrink-0 relative">
+                  <div className="flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 h-[34px] w-60">
+                    <div className="flex flex-col justify-start items-start self-stretch flex-grow-0 flex-shrink-0 h-[34px] gap-0">
+                      <p className="self-stretch flex-grow-0 flex-shrink-0 w-60 text-xs font-bold text-left text-black">
+                        {n.title || "Без названия"}
+                      </p>
                     </div>
                   </div>
-
+                  
                   <button
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
                       onDelete(n.id);
                     }}
-                    title="Удалить"
-                    className="shrink-0 rounded-xl border border-rose-400/25 bg-rose-500/10 px-2 py-1 text-xs hover:bg-rose-500/15"
+                    title="Удалить заметку"
+                    className="flex-grow-0 flex-shrink-0 w-6 h-6 cursor-pointer flex items-center justify-center rounded-full p-1 bg-red-100 hover:bg-red-200 transition-colors"
                   >
-                    🗑
+                    <img 
+                      src="/src/assets/icon-delete.svg" 
+                      alt="Удалить заметку" 
+                      className="w-4 h-4"
+                    />
                   </button>
                 </div>
+                
+                <p className="self-stretch flex-grow-0 flex-shrink-0 w-[299px] text-xs font-light text-left text-black mt-1">
+                  {preview(n.text)}
+                </p>
               </div>
             );
           })
         )}
       </div>
-    </aside>
+    </div>
   );
 }
