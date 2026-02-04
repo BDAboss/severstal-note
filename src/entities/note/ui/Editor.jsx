@@ -144,7 +144,7 @@ export default function Editor({ note, onChangeTitle, onChangeText }) {
       <Toolbar textareaRef={textareaRef} onApply={onChangeText} onInsertImage={insertImageFile} />
 
       <div className="flex flex-col justify-start items-start self-stretch flex-1 min-h-0 relative overflow-hidden px-2.5 py-4 rounded-2xl bg-[#efebe4]">
-        <div className="flex flex-col w-full h-full min-h-0 overflow-y-auto">
+        <div className="flex flex-col w-full h-full min-h-0">
           <div
             data-testid="note-textarea"
             ref={textareaRef}
@@ -155,7 +155,7 @@ export default function Editor({ note, onChangeTitle, onChangeText }) {
             onDrop={onDrop}
             onDragOver={(e) => e.preventDefault()}
             onKeyDown={onKeyDown}
-            className="self-stretch flex-1 min-h-0 w-full text-sm text-left text-black bg-transparent outline-none border-none"
+            className="self-stretch flex-1 min-h-0 w-full overflow-y-auto text-sm text-left text-black bg-transparent outline-none border-none"
             style={{ whiteSpace: "pre-wrap" }}
           />
           <div className="mt-2 text-xs text-[#90a1b9]">{meta}</div>
