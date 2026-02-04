@@ -25,11 +25,11 @@ export default function NotesList({
 }) {
   return (
     <div
-      className="flex flex-col justify-start items-center w-[400px] h-[924px] relative overflow-hidden gap-2.5 px-[13px] pt-[15px] pb-3.5 rounded-[20px] bg-[#fbf7ef]"
+      className="flex w-full max-w-[400px] flex-col justify-start items-center h-[924px] relative overflow-hidden gap-2.5 px-[13px] pt-[15px] pb-3.5 rounded-[20px] bg-[#fbf7ef]"
       style={{ boxShadow: "0px 4px 12px 0 rgba(0,0,0,0.25)" }}
     >
       <div className="flex justify-center items-start self-stretch flex-grow-0 flex-shrink-0 gap-2.5">
-        <div className="flex flex-col justify-center items-start flex-grow h-10 relative overflow-hidden gap-2.5 pl-2.5 pr-[117px] py-[5px] rounded-lg bg-white">
+        <div className="flex flex-col justify-center items-start flex-grow h-10 relative overflow-hidden gap-2.5 px-2.5 py-[5px] rounded-lg bg-white">
           <input
             value={query}
             onChange={(e) => onQueryChange(e.target.value)}
@@ -53,10 +53,10 @@ export default function NotesList({
       </div>
       
       <div className="self-stretch flex-grow-0 flex-shrink-0 h-px relative overflow-hidden">
-        <div className="w-[374px] h-px absolute left-[-1px] top-[-1px] bg-white" />
+        <div className="full h-px absolute left-0 top-0 bg-white" />
       </div>
 
-      <div className="flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 w-[339px] relative overflow-auto gap-5 p-0 rounded-[0px] bg-transparent">
+      <div className="flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 w-full relative overflow-auto gap-5 p-0 rounded-[0px] bg-transparent">
         {notes.length === 0 ? (
           <div className="p-4 text-sm text-slate-500 w-full text-center">Ничего не найдено</div>
         ) : (
@@ -69,14 +69,14 @@ export default function NotesList({
                 tabIndex={0}
                 onClick={() => onSelect(n.id)}
                 onKeyDown={(e) => e.key === "Enter" && onSelect(n.id)}
-                className={`flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 w-[339px] relative overflow-hidden gap-3 p-5 rounded-[20px] bg-white border ${
+                className={`flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 w-full relative overflow-hidden gap-3 p-5 rounded-[20px] bg-white border ${
                   isActive ? "border-[#ffac4e]" : "border-transparent"
                 } cursor-pointer mb-5`}
               >
                 <div className="flex justify-between items-center self-stretch flex-grow-0 flex-shrink-0 relative">
                   <div className="flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 h-[34px] w-60">
                     <div className="flex flex-col justify-start items-start self-stretch flex-grow-0 flex-shrink-0 h-[34px] gap-0">
-                      <p className="self-stretch flex-grow-0 flex-shrink-0 w-60 text-xs font-bold text-left text-black">
+                      <p className="self-stretch flex-grow-0 flex-shrink-0 w-full text-xs font-bold text-left text-black">
                         {n.title || "Без названия"}
                       </p>
                     </div>
@@ -99,7 +99,7 @@ export default function NotesList({
                   </button>
                 </div>
                 
-                <p className="self-stretch flex-grow-0 flex-shrink-0 w-[299px] text-xs font-light text-left text-black mt-1">
+                <p className="self-stretch flex-grow-0 flex-shrink-0 w-full text-xs font-light text-left text-black mt-1">
                   {preview(n.text)}
                 </p>
               </div>

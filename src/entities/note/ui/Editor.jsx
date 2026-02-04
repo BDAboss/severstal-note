@@ -34,7 +34,7 @@ export default function Editor({ note, onChangeTitle, onChangeText }) {
   if (!note) {
     return (
       <div
-        className="flex flex-col justify-start items-center w-[820px] h-[924px] overflow-hidden gap-2.5 px-5 pt-[15px] pb-5 rounded-[20px] bg-[#fbf7ef]"
+        className="flex w-full max-w-[820px] flex-col justify-start items-center h-[924px] overflow-hidden gap-2.5 px-5 pt-[15px] pb-5 rounded-[20px] bg-[#fbf7ef]"
         style={{ boxShadow: "0px 4px 12px 0 rgba(0,0,0,0.25)" }}
       >
         <div className="flex flex-col justify-center items-center self-stretch flex-grow relative overflow-hidden gap-2.5 px-2.5 py-[5px] rounded-lg">
@@ -47,7 +47,7 @@ export default function Editor({ note, onChangeTitle, onChangeText }) {
 
   return (
     <div
-      className="flex flex-col justify-start items-center w-[820px] h-[924px] overflow-hidden gap-2.5 px-5 pt-[15px] pb-5 rounded-[20px] bg-[#fbf7ef]"
+      className="flex w-full max-w-[820px] flex-col justify-start items-center h-[924px] overflow-hidden gap-2.5 px-5 pt-[15px] pb-5 rounded-[20px] bg-[#fbf7ef]"
       style={{ boxShadow: "0px 4px 12px 0 rgba(0,0,0,0.25)" }}
     >
       <div className="flex flex-col justify-center items-start self-stretch flex-grow-0 flex-shrink-0 h-10 relative overflow-hidden gap-2.5 px-2.5 py-[5px] rounded-lg bg-white">
@@ -56,7 +56,7 @@ export default function Editor({ note, onChangeTitle, onChangeText }) {
           onChange={(e) => onChangeTitle(e.target.value)}
           placeholder="Заголовок…"
           maxLength={80}
-          className="self-stretch flex-grow w-[760px] h-[30px] text-[15px] font-semibold text-left text-black bg-transparent outline-none placeholder:text-[#90a1b9] border-none"
+          className="self-stretch flex-grow w-full h-[30px] text-[15px] font-semibold text-left text-black bg-transparent outline-none placeholder:text-[#90a1b9] border-none"
         />
       </div>
 
@@ -78,7 +78,7 @@ export default function Editor({ note, onChangeTitle, onChangeText }) {
       </div>
 
       <div className="self-stretch flex-grow-0 flex-shrink-0 text-xs text-[#90a1b9] mt-2">
-        Подсказка: выдели текст и нажимай Ж / К / Ч — это форматирование, не Markdown.
+        Подсказка: выдели текст и нажимай Ж / К / Ч или выбери нужный Шрифт и Размер.
       </div>
     </div>
   );

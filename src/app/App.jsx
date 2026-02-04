@@ -88,29 +88,27 @@ export default function App() {
   }
 
   return (
-    <div className="w-full min-h-screen relative overflow-hidden bg-[#f5ead6]">
-      <p className="absolute left-[455px] top-[34px] text-2xl font-bold text-left text-[#0f172b]">
-        Мои заметки
-      </p>
+    <div className="w-full min-h-screen bg-[#f5ead6]">
+      <div className="mx-auto flex w-full max-w-[1280px] flex-col gap-6 px-6 pb-10 pt-8">
+        <p className="text-2xl font-bold text-left text-[#0f172b]">Мои заметки</p>
 
-      <div className="absolute left-[340px] top-[78px]">
-        <NotesList
-          notes={filteredNotes}
-          activeId={safeActiveId}
-          query={query}
-          onQueryChange={setQuery}
-          onSelect={setActiveId}
-          onDelete={onDelete}
-          onCreate={onCreate}
-        />
-      </div>
+        <div className="flex w-full flex-col items-center gap-6 xl:flex-row xl:items-start xl:justify-center">
+          <NotesList
+            notes={filteredNotes}
+            activeId={safeActiveId}
+            query={query}
+            onQueryChange={setQuery}
+            onSelect={setActiveId}
+            onDelete={onDelete}
+            onCreate={onCreate}
+          />
 
-      <div className="absolute left-[760px] top-[78px]">
-        <Editor
-          note={activeNote}
-          onChangeTitle={(title) => patchActive({ title })}
-          onChangeText={(text) => patchActive({ text })}
-        />
+          <Editor
+            note={activeNote}
+            onChangeTitle={(title) => patchActive({ title })}
+            onChangeText={(text) => patchActive({ text })}
+          />
+        </div>
       </div>
     </div>
   );
