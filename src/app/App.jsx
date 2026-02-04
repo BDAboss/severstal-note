@@ -14,9 +14,7 @@ export default function App() {
     const res = loadNotes();
 
     if (!res.ok) {
-      toast.error(
-        "Не удалось прочитать заметки из localStorage. Стартуем с дефолтной заметкой."
-      );
+      toast.error("Не удалось прочитать заметки из localStorage. Стартуем с дефолтной заметкой.");
       return createInitialNotes();
     }
 
@@ -24,9 +22,7 @@ export default function App() {
       const initial = createInitialNotes();
       const saved = saveNotes(initial);
       if (!saved.ok)
-        toast.error(
-          "Не удалось сохранить стартовую заметку (localStorage недоступен)."
-        );
+        toast.error("Не удалось сохранить стартовую заметку (localStorage недоступен).");
       return initial;
     }
 
@@ -48,15 +44,13 @@ export default function App() {
 
   const activeNote = useMemo(
     () => notes.find((n) => n.id === safeActiveId) ?? null,
-    [notes, safeActiveId]
+    [notes, safeActiveId],
   );
 
   const filteredNotes = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return notes;
-    return notes.filter((n) =>
-      `${n.title}\n${n.text}`.toLowerCase().includes(q)
-    );
+    return notes.filter((n) => `${n.title}\n${n.text}`.toLowerCase().includes(q));
   }, [notes, query]);
 
   function onCreate() {
@@ -80,10 +74,8 @@ export default function App() {
 
     setNotes((prev) =>
       prev
-        .map((n) =>
-          n.id === safeActiveId ? { ...n, ...patch, updatedAt: Date.now() } : n
-        )
-        .sort(sortByUpdatedDesc)
+        .map((n) => (n.id === safeActiveId ? { ...n, ...patch, updatedAt: Date.now() } : n))
+        .sort(sortByUpdatedDesc),
     );
   }
 

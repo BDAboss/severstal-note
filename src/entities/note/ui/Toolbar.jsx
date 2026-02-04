@@ -28,7 +28,7 @@ export default function Toolbar({ textareaRef, onApply }) {
       { label: "Courier New", value: '"Courier New", Courier, monospace' },
       { label: "Verdana", value: "Verdana, Geneva, sans-serif" },
     ],
-    []
+    [],
   );
 
   const sizes = useMemo(
@@ -41,7 +41,7 @@ export default function Toolbar({ textareaRef, onApply }) {
       { label: "24", value: 6 },
       { label: "32", value: 7 },
     ],
-    []
+    [],
   );
 
   const syncHtml = useCallback(() => {
@@ -59,7 +59,7 @@ export default function Toolbar({ textareaRef, onApply }) {
       keepSelectionAndFocus(el, () => exec(map[type]));
       syncHtml();
     },
-    [textareaRef, syncHtml]
+    [textareaRef, syncHtml],
   );
 
   const applyFont = useCallback(
@@ -72,7 +72,7 @@ export default function Toolbar({ textareaRef, onApply }) {
       setFontOpen(false);
       syncHtml();
     },
-    [textareaRef, syncHtml]
+    [textareaRef, syncHtml],
   );
 
   const applySize = useCallback(
@@ -85,7 +85,7 @@ export default function Toolbar({ textareaRef, onApply }) {
       setSizeOpen(false);
       syncHtml();
     },
-    [textareaRef, syncHtml]
+    [textareaRef, syncHtml],
   );
 
   return (

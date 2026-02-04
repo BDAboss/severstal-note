@@ -23,7 +23,6 @@ export default function Editor({ note, onChangeTitle, onChangeText }) {
     return `Обновлено: ${formatUpdatedAt(note.updatedAt)}`;
   }, [note]);
 
-
   useEffect(() => {
     const el = textareaRef.current;
     if (!el || !note) return;

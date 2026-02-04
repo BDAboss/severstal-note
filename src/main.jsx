@@ -12,9 +12,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       <Toaster
         position="top-right"
         toastOptions={{
-          duration: 3500
+          duration: 3500,
         }}
       />
     </AppErrorBoundary>
-  </React.StrictMode>
+  </React.StrictMode>,
 );

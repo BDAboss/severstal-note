@@ -1,4 +1,3 @@
-
 export function safeParse(raw) {
   try {
     return { ok: true, data: JSON.parse(raw) };

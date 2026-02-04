@@ -23,7 +23,7 @@ export default function NotesList({
   onQueryChange,
   onSelect,
   onDelete,
-  onCreate
+  onCreate,
 }) {
   return (
     <div
@@ -46,14 +46,10 @@ export default function NotesList({
           onClick={onCreate}
           style={{ background: "linear-gradient(to right, #fca311 -2.31%, #ef6c1a 102.31%)" }}
         >
-          <img 
-            src={plusIcon} 
-            alt="Добавить заметку" 
-            className="w-4 h-4"
-          />
+          <img src={plusIcon} alt="Добавить заметку" className="w-4 h-4" />
         </button>
       </div>
-      
+
       <div className="self-stretch flex-grow-0 flex-shrink-0 h-px relative overflow-hidden">
         <div className="full h-px absolute left-0 top-0 bg-white" />
       </div>
@@ -83,7 +79,7 @@ export default function NotesList({
                       </p>
                     </div>
                   </div>
-                  
+
                   <button
                     type="button"
                     onClick={(e) => {
@@ -93,14 +89,10 @@ export default function NotesList({
                     title="Удалить заметку"
                     className="flex-grow-0 flex-shrink-0 w-6 h-6 cursor-pointer flex items-center justify-center rounded-full p-1 bg-red-100 hover:bg-red-200 transition-colors"
                   >
-                    <img 
-                      src={deleteIcon}
-                      alt="Удалить заметку" 
-                      className="w-4 h-4"
-                    />
+                    <img src={deleteIcon} alt="Удалить заметку" className="w-4 h-4" />
                   </button>
                 </div>
-                
+
                 <p className="self-stretch flex-grow-0 flex-shrink-0 w-full text-xs font-light text-left text-black mt-1">
                   {preview(n.text)}
                 </p>
