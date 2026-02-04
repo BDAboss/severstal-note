@@ -1,4 +1,6 @@
 import React from "react";
+import plusIcon from "../../../assets/icon-plus.svg";
+import deleteIcon from "../../../assets/icon-delete.svg";
 
 function htmlToText(html) {
   if (!html) return "";
@@ -45,7 +47,7 @@ export default function NotesList({
           style={{ background: "linear-gradient(to right, #fca311 -2.31%, #ef6c1a 102.31%)" }}
         >
           <img 
-            src="/src/assets/icon-plus.svg" 
+            src={plusIcon} 
             alt="Добавить заметку" 
             className="w-4 h-4"
           />
@@ -92,7 +94,7 @@ export default function NotesList({
                     className="flex-grow-0 flex-shrink-0 w-6 h-6 cursor-pointer flex items-center justify-center rounded-full p-1 bg-red-100 hover:bg-red-200 transition-colors"
                   >
                     <img 
-                      src="/src/assets/icon-delete.svg" 
+                      src={deleteIcon}
                       alt="Удалить заметку" 
                       className="w-4 h-4"
                     />

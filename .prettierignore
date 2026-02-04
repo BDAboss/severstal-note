@@ -1,0 +1,12 @@
+﻿# Keep lockfiles untouched to avoid noisy diffs
+package-lock.json
+
+# Infrastructure files are often formatted manually
+/docker-compose.yml
+
+# README has deliberate line breaks
+/README.md
+
+# Ignore dependencies and build outputs
+/node_modules/
+/dist/
