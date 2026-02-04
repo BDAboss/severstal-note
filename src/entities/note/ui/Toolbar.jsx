@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback } from "react";
+import React, { useMemo, useState, useCallback, useRef } from "react";
 
 function exec(cmd, value = null) {
   document.execCommand(cmd, false, value);
@@ -11,9 +11,10 @@ function keepSelectionAndFocus(el, fn) {
   el.focus();
 }
 
-export default function Toolbar({ textareaRef, onApply }) {
+export default function Toolbar({ textareaRef, onApply, onInsertImage }) {
   const [fontOpen, setFontOpen] = useState(false);
   const [sizeOpen, setSizeOpen] = useState(false);
+  const imageInputRef = useRef(null);
 
   // что показываем в кнопках
   const [selectedFontLabel, setSelectedFontLabel] = useState("Шрифт");
@@ -86,6 +87,23 @@ export default function Toolbar({ textareaRef, onApply }) {
       syncHtml();
     },
     [textareaRef, syncHtml],
+  );
+
+  const onPickImage = useCallback(() => {
+    imageInputRef.current?.click();
+  }, []);
+
+  const onImageChange = useCallback(
+    (e) => {
+      const file = e.target.files?.[0];
+      if (!file || !file.type?.startsWith("image/")) {
+        e.target.value = "";
+        return;
+      }
+      onInsertImage?.(file);
+      e.target.value = "";
+    },
+    [onInsertImage],
   );
 
   return (
@@ -198,6 +216,22 @@ export default function Toolbar({ textareaRef, onApply }) {
         title="Подчёркнутый"
       >
         <p className="text-[10px] font-medium text-center text-black underline">Ч</p>
+      </button>
+      <input
+        ref={imageInputRef}
+        type="file"
+        accept="image/*"
+        onChange={onImageChange}
+        className="hidden"
+      />
+      <button
+        type="button"
+        className="flex justify-center items-center flex-grow-0 flex-shrink-0 w-6 h-6 relative overflow-hidden rounded bg-white border border-[#b5b5b5] cursor-pointer hover:bg-gray-50 transition-colors"
+        onMouseDown={(e) => e.preventDefault()}
+        onClick={onPickImage}
+        title="Insert image"
+      >
+        <span className="text-[10px] font-medium text-center text-black">IMG</span>
       </button>
     </div>
   );

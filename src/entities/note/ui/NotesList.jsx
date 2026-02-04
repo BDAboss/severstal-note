@@ -54,7 +54,7 @@ export default function NotesList({
         <div className="full h-px absolute left-0 top-0 bg-white" />
       </div>
 
-      <div className="flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 w-full relative overflow-auto gap-5 p-0 rounded-[0px] bg-transparent">
+      <div className="flex flex-col justify-start items-start flex-1 min-h-0 w-full relative overflow-y-auto gap-5 p-0 rounded-[0px] bg-transparent">
         {notes.length === 0 ? (
           <div className="p-4 text-sm text-slate-500 w-full text-center">Ничего не найдено</div>
         ) : (
